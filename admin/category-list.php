@@ -4,7 +4,7 @@ include('dbconnection.php');
 
 // Initialize search variable
 $search = '';
-if(isset($_GET['search']) && !empty($_GET['search'])) {
+if (isset($_GET['search']) && !empty($_GET['search'])) {
     $search = mysqli_real_escape_string($conn, $_GET['search']);
     $query = "SELECT * FROM categories WHERE main_category LIKE '%$search%' OR subcategory LIKE '%$search%' ORDER BY id DESC";
 } else {
@@ -58,7 +58,25 @@ $result = mysqli_query($conn, $query);
     <link rel="apple-touch-icon-precomposed" href="images/favicon.png">
 
 </head>
-
+<style>
+ .table-title1
+  {
+    background-color: rgb(237, 241, 245);
+    padding: 10px;
+    gap:200px;
+ 
+ }
+ .wg-table.table-all-category .product-item > .flex > div:first-child {
+    width: 260px;
+    flex-shrink: 0;
+}
+.wg-table.table-all-category .product-item > .flex > div {
+    width: 40%;
+}
+.wg-table.table-all-category > * {
+    min-width: 850px;
+}
+</style>
 <body class="body">
 
     <!-- #wrapper -->
@@ -66,14 +84,14 @@ $result = mysqli_query($conn, $query);
         <!-- #page -->
         <div id="page" class="">
             <!-- layout-wrap -->
-           <div class="layout-wrap">
+            <div class="layout-wrap">
                 <!-- preload -->
                 <div id="preload" class="preload-container">
                     <div class="preloading">
                         <span></span>
                     </div>
                 </div>
-               <!-- /preload -->
+                <!-- /preload -->
                 <!-- section-menu-left -->
                 <?php include('sidebar.php'); ?>
                 <!-- /section-menu-left -->
@@ -93,13 +111,17 @@ $result = mysqli_query($conn, $query);
                                     <h3>All category</h3>
                                     <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                                         <li>
-                                            <a href="index-2.html"><div class="text-tiny">Dashboard</div></a>
+                                            <a href="index-2.html">
+                                                <div class="text-tiny">Dashboard</div>
+                                            </a>
                                         </li>
                                         <li>
                                             <i class="icon-chevron-right"></i>
                                         </li>
                                         <li>
-                                            <a href="#"><div class="text-tiny">Category</div></a>
+                                            <a href="#">
+                                                <div class="text-tiny">Category</div>
+                                            </a>
                                         </li>
                                         <li>
                                             <i class="icon-chevron-right"></i>
@@ -136,13 +158,13 @@ $result = mysqli_query($conn, $query);
                                         <a class="tf-button style-1 w208" href="new-category.php"><i class="icon-plus"></i>Add new</a>
                                     </div>
                                     <div class="wg-table table-all-category">
-                                        <ul class="table-title flex gap20 mb-14">
+                                        <ul class="table-title1 flex gap mb-14">
                                             <li>
                                                 <div class="body-title">Sr No.</div>
                                             </li>
                                             <li>
                                                 <div class="body-title">Main Category</div>
-                                            </li>    
+                                            </li>
                                             <li>
                                                 <div class="body-title">Subcategory</div>
                                             </li>
@@ -151,11 +173,11 @@ $result = mysqli_query($conn, $query);
                                             </li>
                                         </ul>
                                         <ul class="flex flex-column">
-                                            <?php 
+                                            <?php
                                             $sr_no = $offset + 1;
                                             while ($row = mysqli_fetch_assoc($result)) { ?>
                                                 <li class="product-item gap14">
-                                                    <div class="flex items-center justify-between gap20 flex-grow">
+                                                    <div class="flex items-center flex-grow">
                                                         <div class="sr-number">
                                                             <span class="body-title-2"><?php echo $sr_no++; ?></span>
                                                         </div>
@@ -172,7 +194,7 @@ $result = mysqli_query($conn, $query);
                                                     </div>
                                                 </li>
                                             <?php } ?>
-                                            <?php if(mysqli_num_rows($result) == 0): ?>
+                                            <?php if (mysqli_num_rows($result) == 0): ?>
                                                 <li class="product-item gap14">
                                                     <div class="flex items-center justify-center gap20 flex-grow">
                                                         <div class="name">
@@ -188,15 +210,15 @@ $result = mysqli_query($conn, $query);
                                         <div class="text-tiny">Showing <?php echo min($entries_per_page, $total_entries); ?> of <?php echo $total_entries; ?> entries</div>
                                         <ul class="wg-pagination">
                                             <li>
-                                                <a href="?page=<?php echo max(1, $current_page-1); ?>&entries=<?php echo $entries_per_page; ?>&search=<?php echo $search; ?>"><i class="icon-chevron-left"></i></a>
+                                                <a href="?page=<?php echo max(1, $current_page - 1); ?>&entries=<?php echo $entries_per_page; ?>&search=<?php echo $search; ?>"><i class="icon-chevron-left"></i></a>
                                             </li>
-                                            <?php for($i = 1; $i <= $total_pages; $i++): ?>
-                                            <li <?php echo $i == $current_page ? 'class="active"' : ''; ?>>
-                                                <a href="?page=<?php echo $i; ?>&entries=<?php echo $entries_per_page; ?>&search=<?php echo $search; ?>"><?php echo $i; ?></a>
-                                            </li>
+                                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                                <li <?php echo $i == $current_page ? 'class="active"' : ''; ?>>
+                                                    <a href="?page=<?php echo $i; ?>&entries=<?php echo $entries_per_page; ?>&search=<?php echo $search; ?>"><?php echo $i; ?></a>
+                                                </li>
                                             <?php endfor; ?>
                                             <li>
-                                                <a href="?page=<?php echo min($total_pages, $current_page+1); ?>&entries=<?php echo $entries_per_page; ?>&search=<?php echo $search; ?>"><i class="icon-chevron-right"></i></a>
+                                                <a href="?page=<?php echo min($total_pages, $current_page + 1); ?>&entries=<?php echo $entries_per_page; ?>&search=<?php echo $search; ?>"><i class="icon-chevron-right"></i></a>
                                             </li>
                                         </ul>
                                     </div>
@@ -205,12 +227,13 @@ $result = mysqli_query($conn, $query);
                             </div>
                             <!-- /main-content-wrap -->
                         </div>
+
                         <!-- /main-content-wrap -->
                         <!-- bottom-page -->
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 Remos. Design with</div>
-                            <i class="icon-heart"></i>
-                            <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
+                            <div class="body-text">Copyright © 2025 Iskcon Ravet. Design</div>
+                           
+                            <div class="body-text">by <a href="https://designzfactory.in/">designzfactory</a> All rights reserved.</div>
                         </div>
                         <!-- /bottom-page -->
                     </div>
