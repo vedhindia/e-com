@@ -35,7 +35,6 @@ $result = mysqli_query($conn, $query);
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
-
 <head>
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
@@ -73,14 +72,14 @@ $result = mysqli_query($conn, $query);
         <!-- #page -->
         <div id="page" class="">
             <!-- layout-wrap -->
-            <div class="layout-wrap">
+           <div class="layout-wrap">
                 <!-- preload -->
                 <div id="preload" class="preload-container">
                     <div class="preloading">
                         <span></span>
                     </div>
                 </div>
-                <!-- /preload -->
+                   <!-- /preload -->
                 <!-- section-menu-left -->
                 <?php include('sidebar.php'); ?>
                 <!-- /section-menu-left -->
@@ -100,17 +99,13 @@ $result = mysqli_query($conn, $query);
                                     <h3>Product List</h3>
                                     <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                                         <li>
-                                            <a href="index.php">
-                                                <div class="text-tiny">Dashboard</div>
-                                            </a>
+                                            <a href="index.php"><div class="text-tiny">Dashboard</div></a>
                                         </li>
                                         <li>
                                             <i class="icon-chevron-right"></i>
                                         </li>
                                         <li>
-                                            <a href="#">
-                                                <div class="text-tiny">Ecommerce</div>
-                                            </a>
+                                            <a href="#"><div class="text-tiny">Ecommerce</div></a>
                                         </li>
                                         <li>
                                             <i class="icon-chevron-right"></i>
@@ -122,113 +117,111 @@ $result = mysqli_query($conn, $query);
                                 </div>
                                 <!-- product-list -->
                                 <div class="wg-box">
-
+                                    
                                     <div class="flex items-center justify-between gap10 flex-wrap">
                                         <div class="wg-filter flex-grow">
                                             <div class="show">
                                                 <div class="text-tiny">Showing</div>
                                                 <div class="select">
                                                     <select class="" onchange="changeLimit(this.value)">
-                                                        <option value="10"
-                                                            <?php echo $limit == 10 ? 'selected' : ''; ?>>10</option>
-                                                        <option value="20"
-                                                            <?php echo $limit == 20 ? 'selected' : ''; ?>>20</option>
-                                                        <option value="30"
-                                                            <?php echo $limit == 30 ? 'selected' : ''; ?>>30</option>
+                                                        <option value="10" <?php echo $limit == 10 ? 'selected' : ''; ?>>10</option>
+                                                        <option value="20" <?php echo $limit == 20 ? 'selected' : ''; ?>>20</option>
+                                                        <option value="30" <?php echo $limit == 30 ? 'selected' : ''; ?>>30</option>
                                                     </select>
                                                 </div>
                                                 <div class="text-tiny">entries</div>
                                             </div>
                                             <form class="form-search" method="get" action="">
                                                 <fieldset class="name">
-                                                    <input type="text" placeholder="Search here..." name="search"
-                                                        value="<?php echo htmlspecialchars($search); ?>" tabindex="2"
-                                                        aria-required="true" required="">
+                                                    <input type="text" placeholder="Search here..." name="search" value="<?php echo htmlspecialchars($search); ?>" tabindex="2" aria-required="true" required="">
                                                     <input type="hidden" name="limit" value="<?php echo $limit; ?>">
-                                                    <input type="hidden" name="page" value="1">
-                                                    <!-- Reset to page 1 when searching -->
+                                                    <input type="hidden" name="page" value="1"> <!-- Reset to page 1 when searching -->
                                                 </fieldset>
                                                 <div class="button-submit">
                                                     <button class="" type="submit"><i class="icon-search"></i></button>
                                                 </div>
                                             </form>
                                         </div>
-                                        <a class="tf-button style-1 w208" href="add-product.php"><i
-                                                class="icon-plus"></i>Add new</a>
+                                        <a class="tf-button style-1 w208" href="add-product.php"><i class="icon-plus"></i>Add new</a>
                                     </div>
                                     <div class="wg-table table-product-list">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Product Image</th>
-                                                    <th>Product Name</th>
-                                                    <th>Price</th>
-                                                    <th>Weight</th>
-                                                    <th>Dimensions</th>
-                                                    <th>Stock</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php 
-                                                if(mysqli_num_rows($result) > 0) {
-                                                    while($row = mysqli_fetch_assoc($result)) {
-                                                        // Determine price to display
-                                                        $price = isset($row['has_multiple_units']) && $row['has_multiple_units'] ? $row['min_unit_price'] : $row['single_price'];
-                                                        
-                                                        // Check stock status
-                                                        $stock_status = ($row['availability'] === 'in_stock') 
-                                                            ? '<div class="block-available">In stock</div>' 
-                                                            : '<div class="block-not-available">Out of stock</div>';
-                                                        
-                                                        // Get image path or default
-                                                        $image_path = !empty($row['image_path']) ? htmlspecialchars($row['image_path']) : 'images/products/default.png';
-                                                ?>
-                                                <tr>
-                                                    <td class="product-image">
-                                                        <img src="<?php echo $image_path; ?>" alt="Product Image">
-                                                    </td>
-                                                    <td class="product-name">
-                                                        <a href="product-detail.php?id=<?php echo (int)$row['id']; ?>" class="body-title-2">
-                                                            <?php echo htmlspecialchars($row['product_name']); ?>
-                                                        </a>
-                                                    </td>
-                                                    <td class="product-price">$<?php echo number_format((float)$price, 2); ?></td>
-                                                    <td class="product-weight"><?php echo htmlspecialchars($row['weight'] ?? 'N/A'); ?></td>
-                                                    <td class="product-dimensions"><?php echo htmlspecialchars($row['dimensions'] ?? 'N/A'); ?></td>
-                                                    <td class="product-stock"><?php echo $stock_status; ?></td>
-                                                    <td class="product-actions">
-                                                        <div class="list-icon-function">
-                                                            <div class="item eye">
-                                                                <a href="product-detail.php?id=<?php echo (int)$row['id']; ?>"><i class="icon-eye"></i></a>
-                                                            </div>
-                                                            <div class="item edit">
-                                                                <a href="edit-product.php?id=<?php echo (int)$row['id']; ?>"><i class="icon-edit-3"></i></a>
-                                                            </div>
-                                                            <div class="item trash">
-                                                                <a href="#" onclick="deleteProduct(<?php echo (int)$row['id']; ?>); return false;"><i class="icon-trash-2"></i></a>
-                                                            </div>
+                                        <ul class="table-title flex gap20 mb-14">
+                                            <li>
+                                                <div class="body-title">Product Name</div>
+                                            </li>    
+                                            
+                                            <li>
+                                                <div class="body-title">Price</div>
+                                            </li>
+                                            <li>
+                                                <div class="body-title">Weight</div>
+                                            </li>
+                                            <li>
+                                                <div class="body-title">Dimensions</div>
+                                            </li>
+                                            <li>
+                                                <div class="body-title">Stock</div>
+                                            </li>
+                                            <li>
+                                                <div class="body-title">Action</div>
+                                            </li>
+                                        </ul>
+                                        <ul class="flex flex-column">
+                                            <?php 
+                                            if(mysqli_num_rows($result) > 0) {
+                                                while($row = mysqli_fetch_assoc($result)) {
+                                                    // Determine price to display
+                                                    $price = $row['has_multiple_units'] ? $row['min_unit_price'] : $row['single_price'];
+                                                    
+                                                    // Check stock status
+                                                    $stock_status = $row['availability'] == 'in_stock' ? 
+                                                        '<div class="block-available">In stock</div>' : 
+                                                        '<div class="block-not-available">Out of stock</div>';
+                                                    
+                                                    // Get image path or default
+                                                    $image_path = !empty($row['image_path']) ? $row['image_path'] : 'images/products/default.png';
+                                            ?>
+                                            <li class="product-item gap14">
+                                                <div class="image no-bg">
+                                                    <img src="<?php echo $image_path; ?>" alt="<?php echo htmlspecialchars($row['product_name']); ?>">
+                                                </div>
+                                                <div class="flex items-center justify-between gap20 flex-grow">
+                                                    <div class="name">
+                                                        <a href="#" class="body-title-2"><?php echo htmlspecialchars($row['product_name']); ?></a>
+                                                    </div>
+                                                    <div class="body-text">₹<?php echo number_format($price, 2); ?></div>
+                                                    <div class="body-text"><?php echo htmlspecialchars($row['weight']); ?></div>
+                                                    <div class="body-text"><?php echo htmlspecialchars($row['dimensions']); ?></div>
+                                                    <div>
+                                                    <?php echo $row['availability']; ?>
+                                                    </div>
+                                                    <div class="list-icon-function">
+                                                        <div class="item eye">
+                                                            <a href="product-detail.php?id=<?php echo $row['id']; ?>"><i class="icon-eye"></i></a>
                                                         </div>
-                                                    </td>
-                                                </tr>
-                                                <?php 
-                                                    }
-                                                } else {
-                                                    echo '<tr><td colspan="7" class="text-center">No products found</td></tr>';
+                                                        <div class="item edit">
+                                                            <a href="edit-product.php?id=<?php echo $row['id']; ?>"><i class="icon-edit-3"></i></a>
+                                                        </div>
+                                                        <div class="item trash">
+                                                            <a href="#" onclick="deleteProduct(<?php echo $row['id']; ?>); return false;"><i class="icon-trash-2"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <?php 
                                                 }
-                                                ?>
-                                            </tbody>
-                                        </table>
+                                            } else {
+                                                echo "<li class='text-center p-4'>No products found</li>";
+                                            }
+                                            ?>
+                                        </ul>
                                     </div>
-
                                     <div class="divider"></div>
                                     <div class="flex items-center justify-between flex-wrap gap10">
-                                        <div class="text-tiny">Showing <?php echo min($total_records, $limit); ?> of
-                                            <?php echo $total_records; ?> entries</div>
+                                        <div class="text-tiny">Showing <?php echo min($total_records, $limit); ?> of <?php echo $total_records; ?> entries</div>
                                         <ul class="wg-pagination">
                                             <li <?php if($page <= 1){ echo 'class="disabled"'; } ?>>
-                                                
-                                                    href="<?php if($page <= 1){ echo '#'; } else { echo "?page=".($page - 1)."&limit=$limit&search=$search"; } ?>">
+                                                <a href="<?php if($page <= 1){ echo '#'; } else { echo "?page=".($page - 1)."&limit=$limit&search=$search"; } ?>">
                                                     <i class="icon-chevron-left"></i>
                                                 </a>
                                             </li>
@@ -242,13 +235,11 @@ $result = mysqli_query($conn, $query);
                                             for($i = $start_page; $i <= $end_page; $i++) { 
                                             ?>
                                             <li <?php if($page == $i) echo 'class="active"'; ?>>
-                                                
-                                                    href="?page=<?php echo $i; ?>&limit=<?php echo $limit; ?>&search=<?php echo urlencode($search); ?>"><?php echo $i; ?></a>
+                                                <a href="?page=<?php echo $i; ?>&limit=<?php echo $limit; ?>&search=<?php echo urlencode($search); ?>"><?php echo $i; ?></a>
                                             </li>
                                             <?php } ?>
                                             <li <?php if($page >= $total_pages){ echo 'class="disabled"'; } ?>>
-                                                
-                                                    href="<?php if($page >= $total_pages){ echo '#'; } else { echo "?page=".($page + 1)."&limit=$limit&search=$search"; } ?>">
+                                                <a href="<?php if($page >= $total_pages){ echo '#'; } else { echo "?page=".($page + 1)."&limit=$limit&search=$search"; } ?>">
                                                     <i class="icon-chevron-right"></i>
                                                 </a>
                                             </li>
@@ -264,9 +255,7 @@ $result = mysqli_query($conn, $query);
                         <div class="bottom-page">
                             <div class="body-text">Copyright © 2024 Remos. Design with</div>
                             <i class="icon-heart"></i>
-                            <div class="body-text">by 
-                                    href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights
-                                reserved.</div>
+                            <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
                         </div>
                         <!-- /bottom-page -->
                     </div>
@@ -288,23 +277,21 @@ $result = mysqli_query($conn, $query);
     <script src="js/switcher.js"></script>
     <script src="js/theme-settings.js"></script>
     <script src="js/main.js"></script>
-
+    
     <script>
     // Function to change items per page
     function changeLimit(limit) {
         window.location.href = `?limit=${limit}&page=1&search=<?php echo urlencode($search); ?>`;
     }
-
+    
     // Function to delete product
     function deleteProduct(id) {
-        if (confirm('Are you sure you want to delete this product?')) {
+        if(confirm('Are you sure you want to delete this product?')) {
             // AJAX call to delete product
             $.ajax({
                 type: "POST",
                 url: "delete-product.php",
-                data: {
-                    id: id
-                },
+                data: {id: id},
                 success: function(response) {
                     alert("Product deleted successfully!");
                     location.reload();
@@ -318,5 +305,4 @@ $result = mysqli_query($conn, $query);
     </script>
 
 </body>
-
 </html>
