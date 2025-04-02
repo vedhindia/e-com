@@ -67,12 +67,12 @@
                                         </a>
                                         <ul class="sub-menu">
                                             <li class="sub-menu-item">
-                                                <a href="add-product.html" class="">
+                                                <a href="add-product.php" class="">
                                                     <div class="text">Add Product</div>
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
-                                                <a href="product-list.html" class="">
+                                                <a href="product-list.php" class="">
                                                     <div class="text">Product List</div>
                                                 </a>
                                             </li>
