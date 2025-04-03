@@ -163,21 +163,21 @@
                                                     <div class="text">All user</div>
                                                 </a>
                                             </li>
-                                            <li class="sub-menu-item">
-                                                <a href="add-new-user.html" class="">
+                                            <!-- <li class="sub-menu-item">
+                                                <a href="add-new-user.php" class="">
                                                     <div class="text">Add new user</div>
                                                 </a>
-                                            </li>
-                                            <li class="sub-menu-item">
-                                                <a href="login.html" class="">
+                                            </li> -->
+                                            <!-- <li class="sub-menu-item">
+                                                <a href="login.php" class="">
                                                     <div class="text">Login</div>
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
-                                                <a href="sign-up.html" class="">
+                                                <a href="sign-up.php" class="">
                                                     <div class="text">Sign up</div>
                                                 </a>
-                                            </li>
+                                            </li> -->
                                         </ul>
                                     </li>
                                     <!-- <li class="menu-item has-children">
@@ -199,13 +199,13 @@
                                         </ul>
                                     </li> -->
                                     <li class="menu-item">
-                                        <a href="gallery.html" class="">
+                                        <a href="gallery.php" class="">
                                             <div class="icon"><i class="icon-image"></i></div>
                                             <div class="text">Gallery</div>
                                         </a>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="report.html" class="">
+                                        <a href="report.php" class="">
                                             <div class="icon"><i class="icon-pie-chart"></i></div>
                                             <div class="text">Report</div>
                                         </a>
@@ -217,7 +217,7 @@
                                 <ul class="menu-list">
                                    
                                     <li class="menu-item">
-                                        <a href="setting.html" class="">
+                                        <a href="setting.php" class="">
                                             <div class="icon"><i class="icon-settings"></i></div>
                                             <div class="text">Setting</div>
                                         </a>
