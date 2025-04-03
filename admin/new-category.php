@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="author" content="themesflat.com">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Remos eCommerce Admin Dashboard HTML Template</title>
+    <title>Iskcon Ravet</title>
 
     <!-- Theme Styles -->
     <link rel="stylesheet" type="text/css" href="css/animate.min.css">
@@ -104,11 +104,9 @@
 
                         <!-- Bottom Page -->
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 Remos. Design with</div>
-                            <i class="icon-heart"></i>
-                            <div class="body-text">
-                                by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.
-                            </div>
+                            <div class="body-text">Copyright © 2025 Iskcon Ravet . Design with</div>
+                          
+                            <div class="body-text">by <a href="https://designzfactory.in/">designzfactory </a> All rights reserved.</div>
                         </div>
                         <!-- /Bottom Page -->
 

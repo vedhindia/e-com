@@ -76,7 +76,7 @@
                                                     <div class="text">Product List</div>
                                                 </a>
                                             </li>
-                                            <li class="sub-menu-item">
+                                            <!-- <li class="sub-menu-item">
                                                 <a href="product-detail-1.html" class="">
                                                     <div class="text">Product Detail 1</div>
                                                 </a>
@@ -90,7 +90,7 @@
                                                 <a href="product-detail-3.html" class="">
                                                     <div class="text">Product Detail 3</div>
                                                 </a>
-                                            </li>
+                                            </li> -->
                                         </ul>
                                     </li>
                                     <li class="menu-item has-children active">
@@ -136,7 +136,7 @@
                                         </a>
                                         <ul class="sub-menu">
                                             <li class="sub-menu-item">
-                                                <a href="oder-list.html" class="">
+                                                <a href="oder-list.php" class="">
                                                     <div class="text">Order list</div>
                                                 </a>
                                             </li>

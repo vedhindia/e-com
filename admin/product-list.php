@@ -39,7 +39,7 @@ $result = mysqli_query($conn, $query);
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Remos eCommerce Admin Dashboard HTML Template</title>
+    <title>Isckon Ravet</title>
 
     <meta name="author" content="themesflat.com">
 
@@ -253,9 +253,9 @@ $result = mysqli_query($conn, $query);
                         <!-- /main-content-wrap -->
                         <!-- bottom-page -->
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 Remos. Design with</div>
-                            <i class="icon-heart"></i>
-                            <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
+                            <div class="body-text">Copyright © 2025 Iskcon Ravet . Design with</div>
+                          
+                            <div class="body-text">by <a href="https://designzfactory.in/">designzfactory </a> All rights reserved.</div>
                         </div>
                         <!-- /bottom-page -->
                     </div>
