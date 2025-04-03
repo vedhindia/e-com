@@ -137,14 +137,14 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
         <!-- #page -->
         <div id="page" class="">
             <!-- layout-wrap -->
-           <div class="layout-wrap">
+            <div class="layout-wrap">
                 <!-- preload -->
                 <div id="preload" class="preload-container">
                     <div class="preloading">
                         <span></span>
                     </div>
                 </div>
-               <!-- /preload -->
+                <!-- /preload -->
                 <!-- section-menu-left -->
                 <?php include('sidebar.php'); ?>
                 <!-- /section-menu-left -->
@@ -163,13 +163,17 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                     <h3>Blog Management</h3>
                                     <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                                         <li>
-                                            <a href="index.php"><div class="text-tiny">Dashboard</div></a>
+                                            <a href="index.php">
+                                                <div class="text-tiny">Dashboard</div>
+                                            </a>
                                         </li>
                                         <li>
                                             <i class="icon-chevron-right"></i>
                                         </li>
                                         <li>
-                                            <a href="#"><div class="text-tiny">Blog Management</div></a>
+                                            <a href="#">
+                                                <div class="text-tiny">Blog Management</div>
+                                            </a>
                                         </li>
                                         <li>
                                             <i class="icon-chevron-right"></i>
@@ -179,7 +183,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                         </li>
                                     </ul>
                                 </div>
-                                
+
                                 <?php if (isset($_GET['deleted']) && $_GET['deleted'] == 'success'): ?>
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     <strong>Success!</strong> Blog post has been deleted successfully.
@@ -188,7 +192,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                     </button>
                                 </div>
                                 <?php endif; ?>
-                                
+
                                 <?php if (!empty($errorMessage)): ?>
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     <strong>Error!</strong> <?php echo $errorMessage; ?>
@@ -197,7 +201,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                     </button>
                                 </div>
                                 <?php endif; ?>
-                                
+
                                 <!-- all-blogs -->
                                 <div class="wg-box">
                                     <div class="flex items-center justify-between gap10 flex-wrap">
@@ -205,30 +209,36 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                             <div class="show">
                                                 <div class="text-tiny">Showing</div>
                                                 <div class="select">
-                                                    <select class="" onchange="window.location.href='blog.php?show='+this.value+'&search=<?php echo urlencode($search); ?>'">
-                                                        <option value="10" <?php echo $limit == 10 ? 'selected' : ''; ?>>10</option>
-                                                        <option value="20" <?php echo $limit == 20 ? 'selected' : ''; ?>>20</option>
-                                                        <option value="30" <?php echo $limit == 30 ? 'selected' : ''; ?>>30</option>
+                                                    <select class=""
+                                                        onchange="window.location.href='blog.php?show='+this.value+'&search=<?php echo urlencode($search); ?>'">
+                                                        <option value="10"
+                                                            <?php echo $limit == 10 ? 'selected' : ''; ?>>10</option>
+                                                        <option value="20"
+                                                            <?php echo $limit == 20 ? 'selected' : ''; ?>>20</option>
+                                                        <option value="30"
+                                                            <?php echo $limit == 30 ? 'selected' : ''; ?>>30</option>
                                                     </select>
                                                 </div>
                                                 <div class="text-tiny">entries</div>
                                             </div>
                                             <form class="form-search" method="GET" action="blog.php">
                                                 <fieldset class="name">
-                                                    <input type="text" placeholder="Search here..." name="search" value="<?php echo htmlspecialchars($search); ?>">
+                                                    <input type="text" placeholder="Search here..." name="search"
+                                                        value="<?php echo htmlspecialchars($search); ?>">
                                                 </fieldset>
                                                 <div class="button-submit">
                                                     <button class="" type="submit"><i class="icon-search"></i></button>
                                                 </div>
                                             </form>
                                         </div>
-                                        <a class="tf-button style-1 w208" href="add-blog.php"><i class="icon-plus"></i>Add new</a>
+                                        <a class="tf-button style-1 w208" href="add-blog.php"><i
+                                                class="icon-plus"></i>Add new</a>
                                     </div>
                                     <div class="wg-table table-all-blogs">
                                         <ul class="table-title flex gap20 mb-14">
                                             <li>
                                                 <div class="body-title">Image</div>
-                                            </li>    
+                                            </li>
                                             <li>
                                                 <div class="body-title">Title</div>
                                             </li>
@@ -247,65 +257,89 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                         </ul>
                                         <ul class="flex flex-column">
                                             <?php if ($result->num_rows > 0): ?>
-                                                <?php while ($blog = $result->fetch_assoc()): ?>
-                                                    <li class="blog-item flex items-center justify-between gap20">
-                                                        <div class="image">
-                                                            <?php if (!empty($blog['featured_image'])): ?>
-                                                                <img src="<?php echo htmlspecialchars($blog['featured_image']); ?>" alt="<?php echo htmlspecialchars($blog['title']); ?>" style="width: 60px; height: 60px; object-fit: cover;">
-                                                            <?php else: ?>
-                                                                <img src="images/no-image.png" alt="No Image" style="width: 60px; height: 60px; object-fit: cover;">
-                                                            <?php endif; ?>
-                                                        </div>
-                                                        <div class="name">
-                                                            <div class="body-title-2"><?php echo htmlspecialchars($blog['title']); ?></div>
-                                                        </div>
-                                                        <div class="body-text"><?php echo htmlspecialchars($blog['author']); ?></div>
-                                                        <div class="status">
-                                                            <span class="btn-status <?php echo $blog['status'] == 'published' ? 'active' : 'draft'; ?>">
-                                                                <?php echo ucfirst($blog['status']); ?>
-                                                            </span>
-                                                        </div>
-                                                        <div class="body-text">
-                                                            <?php echo date('M d, Y', strtotime($blog['created_at'] ?? 'now')); ?>
-                                                        </div>
-                                                        <div class="list-icon-function">
-                                                            <a href="view-blog.php?id=<?php echo $blog['id']; ?>" class="item eye">
-                                                                <i class="icon-eye"></i>
-                                                            </a>
-                                                            <a href="edit-blog.php?id=<?php echo $blog['id']; ?>" class="item edit">
-                                                                <i class="icon-edit-3"></i>
-                                                            </a>
-                                                            <a href="javascript:void(0)" onclick="confirmDelete(<?php echo $blog['id']; ?>)" class="item trash">
-                                                                <i class="icon-trash-2"></i>
-                                                            </a>
-                                                        </div>
-                                                    </li>
-                                                <?php endwhile; ?>
+                                            <?php while ($blog = $result->fetch_assoc()): ?>
+                                            <li class="blog-item flex items-center justify-between gap20">
+                                                <div class="image">
+                                                    <?php if (!empty($blog['featured_image'])): ?>
+                                                    <img src="<?php echo htmlspecialchars($blog['featured_image']); ?>"
+                                                        alt="<?php echo htmlspecialchars($blog['title']); ?>"
+                                                        style="width: 60px; height: 60px; object-fit: cover;">
+                                                    <?php else: ?>
+                                                    <img src="images/no-image.png" alt="No Image"
+                                                        style="width: 60px; height: 60px; object-fit: cover;">
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="name">
+                                                    <div class="body-title-2">
+                                                        <?php echo htmlspecialchars($blog['title']); ?></div>
+                                                </div>
+                                                <div class="body-text"><?php echo htmlspecialchars($blog['author']); ?>
+                                                </div>
+                                                <div class="status">
+                                                    <span
+                                                        class="btn-status <?php echo $blog['status'] == 'published' ? 'active' : 'draft'; ?>">
+                                                        <?php echo ucfirst($blog['status']); ?>
+                                                    </span>
+                                                </div>
+                                                <div class="body-text">
+                                                    <?php echo date('M d, Y', strtotime($blog['created_at'] ?? 'now')); ?>
+                                                </div>
+                                                <div class="list-icon-function">
+                                                    <a href="view-blog.php?id=<?php echo $blog['id']; ?>"
+                                                        class="item eye">
+                                                        <i class="icon-eye"></i>
+                                                    </a>
+                                                    <a href="edit-blog.php?id=<?php echo $blog['id']; ?>"
+                                                        class="item edit">
+                                                        <i class="icon-edit-3"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);"
+                                                        onclick="confirmDelete(<?= $blog['id']; ?>)" class="item trash">
+                                                        <i class="icon-trash-2"></i>
+                                                    </a>
+
+                                                    <script>
+                                                    function confirmDelete(id) {
+                                                        if (confirm(
+                                                                "Are you sure you want to delete this blog? This action cannot be undone."
+                                                            )) {
+                                                            window.location.href = "delete-blog.php?id=" + id;
+                                                        }
+                                                    }
+                                                    </script>
+
+                                                </div>
+                                            </li>
+                                            <?php endwhile; ?>
                                             <?php else: ?>
-                                                <li class="blog-item flex items-center justify-center">
-                                                    <div class="body-text">No blogs found</div>
-                                                </li>
+                                            <li class="blog-item flex items-center justify-center">
+                                                <div class="body-text">No blogs found</div>
+                                            </li>
                                             <?php endif; ?>
                                         </ul>
                                     </div>
                                     <div class="divider"></div>
                                     <div class="flex items-center justify-between flex-wrap gap10">
-                                        <div class="text-tiny">Showing <?php echo min($totalRecords, $limit); ?> of <?php echo $totalRecords; ?> entries</div>
+                                        <div class="text-tiny">Showing <?php echo min($totalRecords, $limit); ?> of
+                                            <?php echo $totalRecords; ?> entries</div>
                                         <ul class="wg-pagination">
                                             <li <?php if ($page <= 1) echo 'class="disabled"'; ?>>
-                                                <a href="<?php echo $page > 1 ? "blog.php?page=".($page-1)."&show=$limit&search=".urlencode($search) : "#"; ?>">
+                                                <a
+                                                    href="<?php echo $page > 1 ? "blog.php?page=".($page-1)."&show=$limit&search=".urlencode($search) : "#"; ?>">
                                                     <i class="icon-chevron-left"></i>
                                                 </a>
                                             </li>
                                             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                                <li <?php if ($i == $page) echo 'class="active"'; ?>>
-                                                    <a href="blog.php?page=<?php echo $i; ?>&show=<?php echo $limit; ?>&search=<?php echo urlencode($search); ?>">
-                                                        <?php echo $i; ?>
-                                                    </a>
-                                                </li>
+                                            <li <?php if ($i == $page) echo 'class="active"'; ?>>
+                                                <a
+                                                    href="blog.php?page=<?php echo $i; ?>&show=<?php echo $limit; ?>&search=<?php echo urlencode($search); ?>">
+                                                    <?php echo $i; ?>
+                                                </a>
+                                            </li>
                                             <?php endfor; ?>
                                             <li <?php if ($page >= $totalPages) echo 'class="disabled"'; ?>>
-                                                <a href="<?php echo $page < $totalPages ? "blog.php?page=".($page+1)."&show=$limit&search=".urlencode($search) : "#"; ?>">
+                                                <a
+                                                    href="<?php echo $page < $totalPages ? "blog.php?page=".($page+1)."&show=$limit&search=".urlencode($search) : "#"; ?>">
                                                     <i class="icon-chevron-right"></i>
                                                 </a>
                                             </li>
@@ -321,7 +355,9 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                         <div class="bottom-page">
                             <div class="body-text">Copyright © 2024 Remos. Design with</div>
                             <i class="icon-heart"></i>
-                            <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
+                            <div class="body-text">by <a
+                                    href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights
+                                reserved.</div>
                         </div>
                         <!-- /bottom-page -->
                     </div>
@@ -343,49 +379,48 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     <script src="js/switcher.js"></script>
     <script src="js/theme-settings.js"></script>
     <script src="js/main.js"></script>
-    
+
     <style>
-        .image img {
-            border-radius: 5px;
-        }
-        .btn-status {
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        .btn-status.active {
-            background-color: #25c19c;
-            color: white;
-        }
-        .btn-status.draft {
-            background-color: #ffba53;
-            color: white;
-        }
-        .disabled {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-        .alert {
-            margin-bottom: 20px;
-        }
+    .image img {
+        border-radius: 5px;
+    }
+
+    .btn-status {
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .btn-status.active {
+        background-color: #25c19c;
+        color: white;
+    }
+
+    .btn-status.draft {
+        background-color: #ffba53;
+        color: white;
+    }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .alert {
+        margin-bottom: 20px;
+    }
     </style>
-    
+
     <script>
-        // Auto-hide alerts after 5 seconds
-        setTimeout(function() {
-            let alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                $(alert).alert('close');
-            });
-        }, 5000);
-        
-        // Confirm delete function
-        function confirmDelete(blogId) {
-            if (confirm("Are you sure you want to delete this blog post? This action cannot be undone.")) {
-                window.location.href = "blog.php?delete=" + blogId;
-            }
-        }
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        let alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            $(alert).alert('close');
+        });
+    }, 5000);
     </script>
 </body>
+
 </html>
