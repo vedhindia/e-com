@@ -1,16 +1,63 @@
+<?php
+// Include database connection file
+include('dbconnection.php'); // Ensure this file contains the correct database connection setup
+
+$error_msg = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get form data
+    $username = $_POST['username']; // Make sure the name attribute in the input field is 'username'
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+    
+    // Validate inputs
+    if ($password !== $confirm_password) {
+        $error_msg = "Passwords do not match.";
+    } else {
+        // Hash the password
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+        // Check if email already exists
+        $check_sql = "SELECT * FROM admin WHERE email = ?";
+        $check_stmt = $conn->prepare($check_sql);
+        $check_stmt->bind_param("s", $email);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+        
+        if ($check_result->num_rows > 0) {
+            $error_msg = "Email already exists. Please use a different email.";
+        } else {
+            // Insert data into admin table
+            $sql = "INSERT INTO admin (username, email, password) VALUES (?, ?, ?)";
+            if ($stmt = $conn->prepare($sql)) {
+                // Bind parameters
+                $stmt->bind_param("sss", $username, $email, $hashed_password);
+
+                // Execute the query
+                if ($stmt->execute()) {
+                    // Signup successful, redirect to login page with success message
+                    echo "<script>alert('Signup successfully'); window.location.href='login.php';</script>";
+                } else {
+                    $error_msg = "Error: Unable to create account";
+                }
+                $stmt->close();
+            }
+        }
+        $check_stmt->close();
+    }
+    $conn->close();
+}
+?>
+
 <!DOCTYPE html>
-<!--[if IE 8 ]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
-<!--<![endif]-->
 
-
-<!-- Mirrored from themesflat.co/html/remos/sign-up.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 02 Apr 2025 05:37:01 GMT -->
 <head>
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Remos eCommerce Admin Dashboard HTML Template</title>
+    <title>Iskcon Ravet - Admin Registration</title>
 
     <meta name="author" content="themesflat.com">
 
@@ -23,8 +70,6 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-
-
 
     <!-- Font -->
     <link rel="stylesheet" href="font/fonts.css">
@@ -46,7 +91,7 @@
         <div id="page" class="">
             <div class="wrap-login-page sign-up">
                 <div class="flex-grow flex flex-column justify-center gap30">
-                    <a href="index-2.html" id="site-logo-inner">
+                    <a href="index.php" id="site-logo-inner">
                         
                     </a>
                     <div class="login-box">
@@ -54,21 +99,28 @@
                             <h3>Create your account</h3>
                             <div class="body-text">Enter your personal details to create account</div>
                         </div>
-                        <form class="form-login flex flex-column gap24">
+                        
+                        <!-- Display Error Message if Any -->
+                        <?php if ($error_msg != ""): ?>
+                            <div style="color: red; text-align: center; margin-bottom: 15px;">
+                                <?php echo $error_msg; ?>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <form class="form-login flex flex-column gap24" method="POST" action="" id="signupForm">
                             <fieldset class="name">
                                 <div class="body-title mb-10">Your username <span class="tf-color-1">*</span></div>
                                 <div class="flex gap10">
-                                    <input class="flex-grow" type="text" placeholder="First name" name="name" tabindex="0" value="" aria-required="true" required="">
-                                    <input class="flex-grow" type="text" placeholder="Last name" name="name" tabindex="0" value="" aria-required="true" required="">
+                                    <input class="flex-grow" type="text" placeholder="Username" name="username" tabindex="0" required>
                                 </div>
                             </fieldset>
                             <fieldset class="email">
                                 <div class="body-title mb-10">Email address <span class="tf-color-1">*</span></div>
-                                <input class="flex-grow" type="email" placeholder="Enter your email address" name="email" tabindex="0" value="" aria-required="true" required="">
+                                <input class="flex-grow" type="email" placeholder="Enter your email address" name="email" tabindex="0" required>
                             </fieldset>
                             <fieldset class="password">
                                 <div class="body-title mb-10">Password <span class="tf-color-1">*</span></div>
-                                <input class="password-input" type="password" placeholder="Enter your password" name="password" tabindex="0" value="" aria-required="true" required="">
+                                <input class="password-input" type="password" placeholder="Enter your password" name="password" id="password" tabindex="0" required>
                                 <span class="show-pass">
                                     <i class="icon-eye view"></i>
                                     <i class="icon-eye-off hide"></i>
@@ -76,7 +128,7 @@
                             </fieldset>
                             <fieldset class="password">
                                 <div class="body-title mb-10">Confirm password <span class="tf-color-1">*</span></div>
-                                <input class="password-input" type="password" placeholder="Enter your password" name="password" tabindex="0" value="" aria-required="true" required="">
+                                <input class="password-input" type="password" placeholder="Confirm your password" name="confirm_password" id="confirm_password" tabindex="0" required>
                                 <span class="show-pass">
                                     <i class="icon-eye view"></i>
                                     <i class="icon-eye-off hide"></i>
@@ -84,16 +136,17 @@
                             </fieldset>
                             <div class="flex justify-between items-center">
                                 <div class="flex gap10">
-                                    <input class="" type="checkbox" id="signed">
+                                    <input type="checkbox" id="signed" required>
                                     <label class="body-text" for="signed">Agree with Privacy Policy</label>
                                 </div>
                             </div>
-                            <a href="login.html" class="tf-button w-full">Login</a>
+                            <button type="submit" class="tf-button w-full">Sign Up</button>
                         </form>
+                        
                         <div>
                             <div class="text-tiny mb-16 text-center">Or continue with social account</div>
                             <div class="flex gap16 mobile-wrap">
-                                <a href="index-2.html" class="tf-button style-2 w-full">
+                                <a href="#" class="tf-button style-2 w-full">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="22" viewBox="0 0 23 22" fill="none">
                                         <g clip-path="url(#clip0_604_19993)">
                                         <path d="M21.6676 9.08734L12.694 9.08691C12.2978 9.08691 11.9766 9.40806 11.9766 9.80432V12.671C11.9766 13.0672 12.2978 13.3884 12.694 13.3884H17.7474C17.194 14.8244 16.1612 16.0271 14.8435 16.7913L16.9983 20.5213C20.4548 18.5223 22.4983 15.0148 22.4983 11.0884C22.4983 10.5293 22.4571 10.1297 22.3747 9.67967C22.312 9.33777 22.0152 9.08734 21.6676 9.08734Z" fill="#167EE6"/>
@@ -111,7 +164,7 @@
                                     </svg>
                                     <span class="tf-color-3">Sign in with Google</span>
                                 </a>
-                                <a href="index-2.html" class="tf-button style-2 w-full">
+                                <a href="#" class="tf-button style-2 w-full">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="22" viewBox="0 0 23 22" fill="none">
                                         <g clip-path="url(#clip0_604_20003)">
                                         <path d="M22.5 11C22.5 16.4905 18.4773 21.0414 13.2188 21.8664V14.1797H15.7818L16.2695 11H13.2188V8.93664C13.2188 8.06652 13.645 7.21875 15.0114 7.21875H16.3984V4.51172C16.3984 4.51172 15.1395 4.29688 13.9359 4.29688C11.4235 4.29688 9.78125 5.81969 9.78125 8.57656V11H6.98828V14.1797H9.78125V21.8664C4.52273 21.0414 0.5 16.4905 0.5 11C0.5 4.92508 5.42508 0 11.5 0C17.5749 0 22.5 4.92508 22.5 11Z" fill="#1877F2"/>
@@ -129,11 +182,11 @@
                         </div>
                         <div class="body-text text-center">
                             You have an account?
-                            <a href="login.html" class="body-text tf-color">Login Now</a>
+                            <a href="login.php" class="body-text tf-color">Login Now</a>
                         </div>
                     </div>
                 </div>
-                <div class="text-tiny">Copyright © 2024 Remos, All rights reserved.</div>
+                <div class="text-tiny">Copyright © <?php echo date('Y'); ?> Iskcon Ravet. All rights reserved.</div>
             </div>
         </div>
         <!-- /#page -->
@@ -145,9 +198,41 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-select.min.js"></script>
     <script src="js/main.js"></script>
+    
+    <script>
+    // Client-side validation
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        if (password !== confirmPassword) {
+            event.preventDefault();
+            alert('Passwords do not match!');
+        }
+        
+        // You can add more validation here (password strength, etc.)
+        if (password.length < 8) {
+            event.preventDefault();
+            alert('Password must be at least 8 characters long');
+        }
+    });
+    
+    // Show/hide password functionality for both password fields
+    document.querySelectorAll('.show-pass').forEach(function(element) {
+        element.addEventListener('click', function() {
+            const passwordInput = this.previousElementSibling;
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                this.querySelector('.view').style.display = 'none';
+                this.querySelector('.hide').style.display = 'block';
+            } else {
+                passwordInput.type = 'password';
+                this.querySelector('.view').style.display = 'block';
+                this.querySelector('.hide').style.display = 'none';
+            }
+        });
+    });
+    </script>
 
 </body>
-
-
-<!-- Mirrored from themesflat.co/html/remos/sign-up.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 02 Apr 2025 05:37:01 GMT -->
 </html>
