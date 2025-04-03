@@ -6,6 +6,12 @@ include 'dbconnection.php';
 // Initialize error message
 $error_msg = "";
 
+// Check if the user is already logged in
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    header("Location: index.php"); // Redirect to home page if already logged in
+    exit();
+}
+
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get the user inputs
@@ -84,6 +90,7 @@ $conn->close();
     <div id="wrapper">
         <!-- #page -->
         <div id="page" class="">
+
             <div class="wrap-login-page">
                 <div class="flex-grow flex flex-column justify-center gap30">
                     <a href="index.php" id="site-logo-inner"></a>
@@ -140,10 +147,12 @@ $conn->close();
                         </div>
                     </div>
                 </div>
+
                 <div class="bottom-page">
                     <div class="body-text">Copyright © <?php echo date('Y'); ?> Iskcon Ravet. Design</div>
                     <div class="body-text">by <a href="https://designzfactory.in/">designzfactory</a> All rights reserved.</div>
                 </div>
+
             </div>
         </div>
         <!-- /#page -->
