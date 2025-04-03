@@ -5,12 +5,11 @@
 <!--<![endif]-->
 
 
-<!-- Mirrored from themesflat.co/html/remos/oder-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 02 Apr 2025 05:36:58 GMT -->
 <head>
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Remos eCommerce Admin Dashboard HTML Template</title>
+    <title>Iskcon Ravet</title>
 
     <meta name="author" content="themesflat.com">
 

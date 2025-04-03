@@ -10,7 +10,7 @@
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Remos eCommerce Admin Dashboard HTML Template</title>
+    <title>Iskcon Ravet</title>
 
     <meta name="author" content="themesflat.com">
 
@@ -51,7 +51,7 @@
                     </a>
                     <div class="login-box">
                         <div>
-                            <h3>Login to account</h3>
+                            <h3>Admin Login</h3>
                             <div class="body-text">Enter your email & password to login</div>
                         </div>
                         <form class="form-login flex flex-column gap24">
@@ -119,7 +119,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-tiny">Copyright © 2024 Remos, All rights reserved.</div>
+                <div class="bottom-page">
+                    <div class="body-text">Copyright © 2025 Iskcon Ravet. Design</div>
+                   
+                    <div class="body-text">by <a href="https://designzfactory.in/">designzfactory</a> All rights reserved.</div>
+                </div>
             </div>
         </div>
         <!-- /#page -->
