@@ -104,7 +104,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Blog Management - Remos Admin</title>
+    <title>Blog Management </title>
 
     <meta name="author" content="themesflat.com">
 

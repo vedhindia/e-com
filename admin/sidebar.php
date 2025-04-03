@@ -93,7 +93,7 @@
                                             </li> -->
                                         </ul>
                                     </li>
-                                    <li class="menu-item has-children active">
+                                    <li class="menu-item has-children ">
                                         <a href="javascript:void(0);" class="menu-item-button">
                                             <div class="icon"><i class="icon-layers"></i></div>
                                             <div class="text">Category</div>
@@ -105,7 +105,7 @@
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
-                                                <a href="new-category.php" class="active">
+                                                <a href="new-category.php" class="">
                                                     <div class="text">New category</div>
                                                 </a>
                                             </li>
@@ -141,12 +141,12 @@
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
-                                                <a href="oder-detail.html" class="">
+                                                <a href="oder-detail.php" class="">
                                                     <div class="text">Order detail</div>
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
-                                                <a href="oder-tracking.html" class="">
+                                                <a href="oder-tracking.php" class="">
                                                     <div class="text">Order tracking</div>
                                                 </a>
                                             </li>
