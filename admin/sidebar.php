@@ -114,17 +114,17 @@
                                     <li class="menu-item has-children">
                                         <a href="javascript:void(0);" class="menu-item-button">
                                             <div class="icon"><i class="icon-box"></i></div>
-                                            <div class="text">Attributes</div>
+                                            <div class="text">Blogs</div>
                                         </a>
                                         <ul class="sub-menu">
                                             <li class="sub-menu-item">
-                                                <a href="attributes.html" class="">
-                                                    <div class="text">Attributes</div>
+                                                <a href="blog.php" class="">
+                                                    <div class="text">Blogs</div>
                                                 </a>
                                             </li>
                                             <li class="sub-menu-item">
-                                                <a href="add-attributes.html" class="">
-                                                    <div class="text">Add attributes</div>
+                                                <a href="add-blog.php" class="">
+                                                    <div class="text">Add Blogs</div>
                                                 </a>
                                             </li>
                                         </ul>
