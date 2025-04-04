@@ -1,6 +1,9 @@
 <?php
-// Include database connection
-include('dbconnection.php');
+session_start();
+include_once 'dbconnection.php';
+if (empty($_SESSION['admin_session'])) {
+    header('Location:login.php');
+}
 
 // Check if request method is POST and ID exists
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {

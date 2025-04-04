@@ -1,6 +1,10 @@
 <?php
-// Include database connection
-include('dbconnection.php');
+session_start();
+include_once 'dbconnection.php';
+if (empty($_SESSION['admin_session'])) {
+    header('Location:login.php');
+}
+
 
 // Pagination settings
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default 10 items per page

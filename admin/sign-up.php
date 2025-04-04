@@ -11,6 +11,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     
+    // Initialize profile image variable
+    $profile_image = "images/avatar/user-1.png"; // Default image
+    
+    // Check if image was uploaded
+    if(isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == 0) {
+        $allowed = array("jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "image/png");
+        $filename = $_FILES["profile_image"]["name"];
+        $filetype = $_FILES["profile_image"]["type"];
+        $filesize = $_FILES["profile_image"]["size"];
+        
+        // Verify file extension
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if(!array_key_exists($ext, $allowed)) {
+            $error_msg = "Error: Please select a valid file format.";
+        }
+        
+        // Verify file size - 5MB maximum
+        $maxsize = 5 * 1024 * 1024;
+        if($filesize > $maxsize) {
+            $error_msg = "Error: File size is larger than the allowed limit.";
+        }
+        
+        // Verify MIME type of the file
+        if(in_array($filetype, $allowed)) {
+            // Check if file exists before uploading it
+            $target_dir = "uploads/";
+            
+            // Create directory if it doesn't exist
+            if (!file_exists($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+            
+            $target_file = $target_dir . uniqid() . "_" . basename($filename);
+            
+            if(move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file)) {
+                $profile_image = $target_file;
+            } else {
+                $error_msg = "Error: There was a problem uploading your file. Please try again.";
+            }
+        } else {
+            $error_msg = "Error: There was a problem with your upload. Please try again.";
+        }
+    }
+    
     // Validate inputs
     if ($password !== $confirm_password) {
         $error_msg = "Passwords do not match.";
@@ -28,11 +72,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($check_result->num_rows > 0) {
             $error_msg = "Email already exists. Please use a different email.";
         } else {
-            // Insert data into admin table
-            $sql = "INSERT INTO admin (username, email, password) VALUES (?, ?, ?)";
+            // Insert data into admin table with profile image
+            $sql = "INSERT INTO admin (username, email, password, profile_image) VALUES (?, ?, ?, ?)";
             if ($stmt = $conn->prepare($sql)) {
                 // Bind parameters
-                $stmt->bind_param("sss", $username, $email, $hashed_password);
+                $stmt->bind_param("ssss", $username, $email, $hashed_password, $profile_image);
 
                 // Execute the query
                 if ($stmt->execute()) {
@@ -107,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                         <?php endif; ?>
                         
-                        <form class="form-login flex flex-column gap24" method="POST" action="" id="signupForm">
+                        <form class="form-login flex flex-column gap24" method="POST" action="" id="signupForm" enctype="multipart/form-data">
                             <fieldset class="name">
                                 <div class="body-title mb-10">Your username <span class="tf-color-1">*</span></div>
                                 <div class="flex gap10">
@@ -117,6 +161,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <fieldset class="email">
                                 <div class="body-title mb-10">Email address <span class="tf-color-1">*</span></div>
                                 <input class="flex-grow" type="email" placeholder="Enter your email address" name="email" tabindex="0" required>
+                            </fieldset>
+                            <fieldset class="profile-image">
+                                <div class="body-title mb-10">Profile Image</div>
+                                <input class="flex-grow" type="file" name="profile_image" accept="image/*">
+                                <div class="text-tiny mt-2">Select your profile picture (optional)</div>
                             </fieldset>
                             <fieldset class="password">
                                 <div class="body-title mb-10">Password <span class="tf-color-1">*</span></div>

@@ -1,5 +1,10 @@
 <?php
-include 'dbconnection.php';
+
+session_start();
+include_once 'dbconnection.php';
+if (empty($_SESSION['admin_session'])) {
+    header('Location:login.php');
+}
 
 // Set up alert messages
 $successMessage = '';

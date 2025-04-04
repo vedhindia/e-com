@@ -1,6 +1,10 @@
 <?php
-// Start the session to access session variables
 session_start();
+include_once 'dbconnection.php';
+if (empty($_SESSION['admin_session'])) {
+    header('Location:login.php');
+}
+
 
 // Check if session variables are set before accessing them
 $username = isset($_SESSION['admin_username']) ? $_SESSION['admin_username'] : 'Admin';

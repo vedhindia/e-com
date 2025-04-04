@@ -1,5 +1,9 @@
 <?php
-include 'dbconnection.php'; // Include database connection
+session_start();
+include_once 'dbconnection.php';
+if (empty($_SESSION['admin_session'])) {
+    header('Location:login.php');
+}
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $id = $_GET['id'];

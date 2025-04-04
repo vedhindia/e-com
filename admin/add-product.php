@@ -1,7 +1,11 @@
 
 <?php
-// Include database connection
-include('dbconnection.php');
+session_start();
+include_once 'dbconnection.php';
+if (empty($_SESSION['admin_session'])) {
+    header('Location:login.php');
+}
+
 
 // Fetch main categories
 $query = "SELECT DISTINCT main_category FROM categories ORDER BY main_category";
