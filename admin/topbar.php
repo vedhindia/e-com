@@ -54,7 +54,7 @@ $profile_image = $_SESSION['admin_session']['profile_image'];
                                 <div class="body-title-2">Account</div>
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="#" class="user-item">
                                 <div class="icon">
                                     <i class="icon-mail"></i>
@@ -70,23 +70,23 @@ $profile_image = $_SESSION['admin_session']['profile_image'];
                                 </div>
                                 <div class="body-title-2">Taskboard</div>
                             </a>
-                        </li>
+                        </li> -->
                         <li>
-                            <a href="setting.html" class="user-item">
+                            <a href="setting.php" class="user-item">
                                 <div class="icon">
                                     <i class="icon-settings"></i>
                                 </div>
                                 <div class="body-title-2">Setting</div>
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="#" class="user-item">
                                 <div class="icon">
                                     <i class="icon-headphones"></i>
                                 </div>
                                 <div class="body-title-2">Support</div>
                             </a>
-                        </li>
+                        </li> -->
                         <!-- Updated Logout link -->
                         <li>
                             <a href="logout.php" class="user-item">  <!-- Points to logout.php -->

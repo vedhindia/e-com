@@ -1,7 +1,7 @@
 <div class="section-menu-left">
                     <div class="box-logo">
                         <a href="index-2.html" id="site-logo-inner">
-                            <img class="" id="logo_header" alt="" src="images/logo/logo.png" data-light="images/logo/logo.png" data-dark="images/logo/logo-dark.png" >
+                            <img class="img-fluid " id="logo_header" alt="" src="images/ISKCON_Logo.png" data-light="images/ISKCON_Logo.png" data-dark="images/ISKCON_Logo.png" width="100"  height="100">
                         </a>
                         <div class="button-show-hide">
                             <i class="icon-menu-left"></i>
