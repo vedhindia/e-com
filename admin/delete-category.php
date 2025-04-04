@@ -1,41 +1,50 @@
 <?php
 session_start();
 include_once 'dbconnection.php';
+
+// Check if user is logged in
 if (empty($_SESSION['admin_session'])) {
-    header('Location:login.php');
-}
-
-// Check if ID is provided
-if(!isset($_GET['id']) || empty($_GET['id'])) {
-    // Redirect to category list with error message
-    header("Location: category-list.php?error=no_id");
+    header('Location: login.php');
     exit;
 }
 
-$id = mysqli_real_escape_string($conn, $_GET['id']);
+$id = $_GET['id'];
 
-// Get category details for logging or confirmation (optional)
-$query = "SELECT * FROM categories WHERE id = '$id'";
-$result = mysqli_query($conn, $query);
+// Start transaction for data integrity
+mysqli_begin_transaction($conn);
 
-if(mysqli_num_rows($result) == 0) {
-    // Category doesn't exist
-    header("Location: category-list.php?error=not_found");
-    exit;
-}
+try {
+    // First, delete associated subcategories (handle reference integrity)
+    $delete_subcategories = "DELETE FROM subcategories WHERE category_id = ?";
+    $stmt = mysqli_prepare($conn, $delete_subcategories);
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
 
-$category = mysqli_fetch_assoc($result);
+    // Now delete the category using prepared statement
+    $delete_query = "DELETE FROM categories WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $delete_query);
+    mysqli_stmt_bind_param($stmt, "i", $id);
 
-// Delete the category
-$delete_query = "DELETE FROM categories WHERE id = '$id'";
+    if (mysqli_stmt_execute($stmt)) {
+        // Commit the transaction
+        mysqli_commit($conn);
 
-if(mysqli_query($conn, $delete_query)) {
-    // Success - redirect with success message
-    header("Location: category-list.php?success=deleted");
-    exit;
-} else {
+        // JavaScript alert for successful deletion
+        echo "<script>
+                alert('Category deleted successfully!');
+                window.location.href = 'category-list.php';
+              </script>";
+        exit;
+    } else {
+        // Something went wrong
+        throw new Exception(mysqli_error($conn));
+    }
+} catch (Exception $e) {
+    // Rollback the transaction
+    mysqli_rollback($conn);
+
     // Error - redirect with error message
-    header("Location: category-list.php?error=delete_failed&message=" . urlencode(mysqli_error($conn)));
+    header("Location: category-list.php?error=delete_failed&message=" . urlencode($e->getMessage()));
     exit;
 }
 ?>

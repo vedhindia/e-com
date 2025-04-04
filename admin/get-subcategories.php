@@ -11,13 +11,13 @@ if(isset($_GET['main_category'])) {
     $main_category = mysqli_real_escape_string($conn, $_GET['main_category']);
     
     // Fetch subcategories for the given main category
-    $query = "SELECT DISTINCT subcategory FROM categories WHERE main_category = '$main_category' ORDER BY subcategory";
+    $query = "SELECT DISTINCT subcategory_name FROM subcategories WHERE category_name = '$main_category' ORDER BY subcategory_name";
     $result = mysqli_query($conn, $query);
     
     $subcategories = [];
     
     while($row = mysqli_fetch_assoc($result)) {
-        $subcategories[] = $row['subcategory'];
+        $subcategories[] = $row['subcategory_name'];
     }
     
     // Return as JSON
