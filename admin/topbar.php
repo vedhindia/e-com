@@ -76,7 +76,7 @@ $profile_image = $_SESSION['admin_session']['profile_image'];
                                 <div class="icon">
                                     <i class="icon-settings"></i>
                                 </div>
-                                <div class="body-title-2">Setting</div>
+                                <div class="body-title-2">Change Password</div>
                             </a>
                         </li>
                         <!-- <li>
