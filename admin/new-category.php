@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+session_start();
+include_once 'dbconnection.php';
+if (empty($_SESSION['admin_session'])) {
+    header('Location:login.php');
+}
+?>
+ <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 
 <head>
@@ -84,12 +91,7 @@
                                             <input class="flex-grow" type="text" name="main_category" placeholder="Enter main category name" required>
                                         </fieldset>
 
-                                        <!-- Subcategory Name -->
-                                        <fieldset class="name">
-                                            <div class="body-title">Subcategory Name <span class="tf-color-1">*</span></div>
-                                            <input class="flex-grow" type="text" name="subcategory" placeholder="Enter subcategory name" required>
-                                        </fieldset>
-
+                                    
                                         <!-- Submit Button -->
                                         <div class="bot">
                                             <button class="tf-button w208" type="submit">Save</button>

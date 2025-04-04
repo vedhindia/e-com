@@ -106,7 +106,12 @@
                                             </li>
                                             <li class="sub-menu-item">
                                                 <a href="new-category.php" class="">
-                                                    <div class="text">New category</div>
+                                                    <div class="text">Add Main category</div>
+                                                </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                <a href="subcategories.php" class="">
+                                                    <div class="text">Add Sub category</div>
                                                 </a>
                                             </li>
                                         </ul>

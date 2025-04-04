@@ -9,10 +9,9 @@ if (empty($_SESSION['admin_session'])) {
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $main_category = $conn->real_escape_string($_POST['main_category']);
-    $subcategory = $conn->real_escape_string($_POST['subcategory']);
 
     // Insert query
-    $sql = "INSERT INTO categories (main_category, subcategory) VALUES ('$main_category', '$subcategory')";
+    $sql = "INSERT INTO categories (main_category) VALUES ('$main_category')";
 
     if ($conn->query($sql) === TRUE) {
         // Redirect with success message
