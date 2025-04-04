@@ -1,14 +1,12 @@
 <?php
 session_start();
-include_once 'dbconnection.php';
 if (empty($_SESSION['admin_session'])) {
     header('Location:login.php');
 }
+$username = $_SESSION['admin_session']['username'];
+$email = $_SESSION['admin_session']['email'];
+$profile_image = $_SESSION['admin_session']['profile_image'];
 
-
-// Check if session variables are set before accessing them
-$username = isset($_SESSION['admin_username']) ? $_SESSION['admin_username'] : 'Admin';
-$admin_email = isset($_SESSION['admin_email']) ? $_SESSION['admin_email'] : 'Admin';
 ?>
 
 <!-- The header part -->
@@ -34,16 +32,16 @@ $admin_email = isset($_SESSION['admin_email']) ? $_SESSION['admin_email'] : 'Adm
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="header-user wg-user">
                             <span class="image">
-                                <img src="images/avatar/user-1.png" alt="">
+                                <img src="<?php echo htmlspecialchars($profile_image); ?>" alt="">
                             </span>
                             <span class="flex flex-column">
                                 <!-- Display session data here for username (email) -->
                                 <?php if (isset($_SESSION['admin_email'])): ?>
-                                    <span class="body-title mb-2"><?php echo htmlspecialchars($admin_email); ?></span>
+                                    <span class="body-title mb-2"><?php echo htmlspecialchars($email); ?></span>
                                 <?php else: ?>
-                                    <span class="body-title mb-2">Admin</span>
+                                    <span class="body-title mb-2"><?php echo htmlspecialchars($username); ?></span>
                                 <?php endif; ?>
-                                <span class="text-tiny"><?php echo htmlspecialchars($username); ?></span>
+                                <span class="text-tiny"><?php echo htmlspecialchars($email); ?></span>
                             </span>
                         </span>
                     </button>

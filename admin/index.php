@@ -1,3 +1,11 @@
+<?php
+session_start();
+include_once 'dbconnection.php';
+if (empty($_SESSION['admin_session'])) {
+    header('Location:login.php');
+}
+?>
+
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">

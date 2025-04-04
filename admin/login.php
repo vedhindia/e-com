@@ -19,8 +19,10 @@ if (isset($_POST['login'])) {
         $row = $result->fetch_assoc();
         $dbpass = $row["password"];
 
-        if ($password == $dbpass) {  // Consider using password_hash() for better security
+        // Check if using legacy plain text password or hashed password
+        if (password_verify($password, $dbpass) || $password == $dbpass) {
             $_SESSION['admin_session'] = $row;
+           
             echo "<script> location.replace('index.php');</script>";
             exit;
         } else {
