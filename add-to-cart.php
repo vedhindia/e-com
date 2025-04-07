@@ -11,23 +11,38 @@ function debug_log($message, $data = null) {
     error_log(date('Y-m-d H:i:s') . " - " . $message . ($data ? " - Data: " . json_encode($data) : ""));
 }
 
-// Generate or get session ID
-if (!isset($_SESSION['session_id'])) {
-    $_SESSION['session_id'] = session_id();
+// Check all possible user ID session variables
+$user_id = null;
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+} elseif (isset($_SESSION['userId'])) { 
+    $user_id = $_SESSION['userId'];
+} elseif (isset($_SESSION['id'])) {
+    $user_id = $_SESSION['id'];
+} elseif (isset($_SESSION['uid'])) {
+    $user_id = $_SESSION['uid'];
 }
-$session_id = $_SESSION['session_id'];
-debug_log("Session ID: " . $session_id);
 
-// Function to get cart count
-function getCartCount($conn, $session_id) {
+debug_log("User ID found: " . ($user_id ? $user_id : "Not logged in"));
+debug_log("All session variables: ", $_SESSION);
+
+// Function to get cart count - modified to use only user_id
+function getCartCount($conn, $user_id = null) {
     try {
-        $sql = "SELECT SUM(quantity) as count FROM cart WHERE session_id = ?";
+        // If user is not logged in, return 0
+        if (!$user_id) {
+            return 0;
+        }
+        
+        $sql = "SELECT SUM(quantity) as count FROM cart WHERE user_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
+        
         if (!$stmt) {
             throw new Exception("Error preparing cart count query: " . mysqli_error($conn));
         }
         
-        mysqli_stmt_bind_param($stmt, "s", $session_id);
+        mysqli_stmt_bind_param($stmt, "i", $user_id);
+        
         if (!mysqli_stmt_execute($stmt)) {
             throw new Exception("Error executing cart count query: " . mysqli_stmt_error($stmt));
         }
@@ -55,6 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Invalid product ID');
         }
 
+        // Check if user is logged in
+        if (!$user_id) {
+            throw new Exception('User not logged in');
+        }
+
         // Check if product exists and get category information
         $check_sql = "SELECT p.id, p.main_category, p.subcategory, p.product_name, 
                      (SELECT COUNT(*) FROM product_units WHERE product_id = p.id) as unit_count 
@@ -78,6 +98,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $product = mysqli_fetch_assoc($result);
         debug_log("Product found", $product);
+        
+        // Ensure subcategory is not empty and convert to string explicitly
+        if (empty($product['subcategory'])) {
+            $product['subcategory'] = '0'; // Default value if subcategory is empty
+        }
+        
+        // Explicitly convert subcategory to string
+        $product['subcategory'] = (string)$product['subcategory'];
+        
+        debug_log("Category info", [
+            'main_category' => $product['main_category'],
+            'subcategory' => $product['subcategory']
+        ]);
 
         // Handle unit validation
         if ($product['unit_count'] > 0) {
@@ -125,14 +158,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $unit_id = null;
         }
 
-        // Check if product is already in cart
-        $cart_sql = "SELECT id, quantity FROM cart WHERE session_id = ? AND product_id = ? AND (unit_id = ? OR (unit_id IS NULL AND ? IS NULL))";
+        // Check if product is already in cart - using only user_id
+        $cart_sql = "SELECT id, quantity FROM cart WHERE 
+                    user_id = ? AND product_id = ? 
+                    AND (unit_id = ? OR (unit_id IS NULL AND ? IS NULL))";
         $stmt = mysqli_prepare($conn, $cart_sql);
+        
         if (!$stmt) {
             throw new Exception("Error preparing cart check query: " . mysqli_error($conn));
         }
 
-        mysqli_stmt_bind_param($stmt, "siii", $session_id, $product_id, $unit_id, $unit_id);
+        mysqli_stmt_bind_param($stmt, "iiii", $user_id, $product_id, $unit_id, $unit_id);
+
         if (!mysqli_stmt_execute($stmt)) {
             throw new Exception("Error executing cart check query: " . mysqli_stmt_error($stmt));
         }
@@ -145,23 +182,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response['message'] = $product['product_name'] . ' is already in your cart. You can update the quantity in the cart page.';
             debug_log("Product already in cart", ['product_id' => $product_id, 'product_name' => $product['product_name']]);
         } else {
-            // Add new cart item
-            $insert_sql = "INSERT INTO cart (session_id, product_id, main_category, subcategory, unit_id, quantity) 
+            // Log values before insert to verify
+            debug_log("Values to be inserted", [
+                'user_id' => $user_id,
+                'product_id' => $product_id,
+                'main_category' => $product['main_category'],
+                'subcategory' => $product['subcategory'],
+                'unit_id' => $unit_id,
+                'quantity' => $quantity
+            ]);
+            
+            // Add new cart item - using only user_id
+            $insert_sql = "INSERT INTO cart (user_id, product_id, main_category, subcategory, unit_id, quantity) 
                           VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $insert_sql);
             if (!$stmt) {
                 throw new Exception("Error preparing insert query: " . mysqli_error($conn));
             }
 
-            mysqli_stmt_bind_param($stmt, "sissii", $session_id, $product_id, $product['main_category'], 
+            mysqli_stmt_bind_param($stmt, "isssii", $user_id, $product_id, $product['main_category'], 
                                  $product['subcategory'], $unit_id, $quantity);
             
             if (!mysqli_stmt_execute($stmt)) {
-                throw new Exception("Error executing insert query: " . mysqli_stmt_error($stmt));
+                throw new Exception("Error executing insert query: " . mysqli_stmt_error($stmt) . " - SQL: " . $insert_sql);
             }
 
-            debug_log("New cart item added", [
-                'session_id' => $session_id,
+            $inserted_id = mysqli_insert_id($conn);
+            debug_log("New cart item added with ID: " . $inserted_id, [
+                'user_id' => $user_id,
                 'product_id' => $product_id,
                 'main_category' => $product['main_category'],
                 'subcategory' => $product['subcategory'],
@@ -186,10 +234,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     debug_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
 }
 
-// Get updated cart count
-$response['cart_count'] = getCartCount($conn, $session_id);
+// Get updated cart count - now passing only user_id
+$response['cart_count'] = getCartCount($conn, $user_id);
 debug_log("Final cart count: " . $response['cart_count']);
 
 header('Content-Type: application/json');
 echo json_encode($response);
-?> 
+?>

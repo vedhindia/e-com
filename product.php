@@ -1,6 +1,11 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+session_start();
+include 'admin/dbconnection.php';
+include 'check-auth.php';
+
+// Require login for this page
+requireLogin();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -110,7 +115,6 @@ ini_set('display_errors', 1);
 							<!-- row -->
 							<div class="row">
                             <?php
-                            include_once 'admin/dbconnection.php';
 
                             if(isset($_GET['main_category']) && isset($_GET['subcategory'])) {
                                 $main_category = mysqli_real_escape_string($conn, $_GET['main_category']);
