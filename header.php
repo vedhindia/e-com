@@ -1,3 +1,9 @@
+	
+	<style>
+		.grocery-theme .header_topbar.dark {
+       background:rgb(105, 105, 105);
+}
+	</style>
 	<div class="header">
 				<!-- Topbar -->
 				<div class="header_topbar dark">

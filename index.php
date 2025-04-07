@@ -6,13 +6,16 @@
     <meta name="author" content="www.frebsite.nl" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Odex - Organic Food & Grocery Market HTML Template</title>
+    <title>Iskcon Ravet</title>
 
     <!-- Custom CSS -->
     <link href="assets/css/styles.css" rel="stylesheet">
 
 </head>
 
+<style>
+    
+</style>
 <body class="grocery-theme">
 
     <!-- ============================================================== -->
