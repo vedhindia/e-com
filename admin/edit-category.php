@@ -5,7 +5,6 @@ if (empty($_SESSION['admin_session'])) {
     header('Location:login.php');
 }
 
-
 // Check if ID is provided
 if(!isset($_GET['id']) || empty($_GET['id'])) {
     header("Location: category-list.php");
@@ -17,16 +16,32 @@ $id = mysqli_real_escape_string($conn, $_GET['id']);
 // Handle form submission
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $main_category = mysqli_real_escape_string($conn, $_POST['main_category']);
-    $subcategory = mysqli_real_escape_string($conn, $_POST['subcategory']);
     
     // Validate inputs
-    if(empty($main_category) || empty($subcategory)) {
-        $error = "Main category and subcategory are required";
+    if(empty($main_category)) {
+        $error = "Main category is required";
     } else {
         // Update category in database
-        $update_query = "UPDATE categories SET main_category='$main_category', subcategory='$subcategory' WHERE id='$id'";
+        $update_query = "UPDATE categories SET main_category='$main_category' WHERE id='$id'";
         
         if(mysqli_query($conn, $update_query)) {
+            // Handle subcategories
+            // First, get the submitted subcategories
+            $subcategories = isset($_POST['subcategories']) ? $_POST['subcategories'] : [];
+            
+            // Delete existing subcategories associated with this category
+            $delete_subcategories = "DELETE FROM subcategories WHERE category_id='$id'";
+            mysqli_query($conn, $delete_subcategories);
+            
+            // Insert new subcategories
+            foreach($subcategories as $subcategory) {
+                if(!empty($subcategory)) {
+                    $subcategory = mysqli_real_escape_string($conn, $subcategory);
+                    $insert_subcategory = "INSERT INTO subcategories (category_id, subcategory_name) VALUES ('$id', '$subcategory')";
+                    mysqli_query($conn, $insert_subcategory);
+                }
+            }
+            
             // Success message
             $success = "Category updated successfully";
             // Redirect after 2 seconds
@@ -38,7 +53,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Get current category data
-$query = "SELECT * FROM categories WHERE id='$id'";
+$query = "SELECT c.*, GROUP_CONCAT(s.subcategory_name SEPARATOR '|') as subcategories 
+          FROM categories c 
+          LEFT JOIN subcategories s ON c.id = s.category_id 
+          WHERE c.id='$id' 
+          GROUP BY c.id";
 $result = mysqli_query($conn, $query);
 
 if(mysqli_num_rows($result) == 0) {
@@ -47,6 +66,7 @@ if(mysqli_num_rows($result) == 0) {
 }
 
 $category = mysqli_fetch_assoc($result);
+$subcategories = !empty($category['subcategories']) ? explode('|', $category['subcategories']) : [];
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
@@ -55,7 +75,7 @@ $category = mysqli_fetch_assoc($result);
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Edit Category - Remos eCommerce Admin Dashboard</title>
+    <title>Edit Category - Iskcon Ravet</title>
 
     <meta name="author" content="themesflat.com">
 
@@ -135,7 +155,7 @@ $category = mysqli_fetch_assoc($result);
                                         
                                         <form method="post" action="" class="form-edit-category">
                                             <div class="row">
-                                                <div class="col-lg-6">
+                                                <div class="col-lg-12">
                                                     <div class="form-group">
                                                         <label for="main_category">Main Category</label>
                                                         <input type="text" id="main_category" name="main_category" 
@@ -144,18 +164,33 @@ $category = mysqli_fetch_assoc($result);
                                                     </div>
                                                 </div>
                                                 
-                                                <div class="col-lg-6">
+                                                <div class="col-lg-12">
                                                     <div class="form-group">
-                                                        <label for="subcategory">Subcategory</label>
-                                                        <input type="text" id="subcategory" name="subcategory" 
-                                                               value="<?php echo htmlspecialchars($category['subcategory']); ?>" 
-                                                               placeholder="Enter subcategory" required>
+                                                        <label>Subcategories</label>
+                                                        <div id="subcategories-container">
+                                                            <?php foreach($subcategories as $index => $subcategory): ?>
+                                                                <div class="subcategory-input-group mb-2 d-flex">
+                                                                    <input type="text" name="subcategories[]" value="<?php echo htmlspecialchars($subcategory); ?>" 
+                                                                           placeholder="Enter subcategory" class="form-control mr-2" style="flex: 1;">
+                                                                    <?php if($index > 0): ?>
+                                                                        <button type="button" class="btn btn-danger remove-subcategory">Remove</button>
+                                                                    <?php endif; ?>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                            
+                                                            <?php if(empty($subcategories)): ?>
+                                                                <div class="subcategory-input-group mb-2 d-flex">
+                                                                    <input type="text" name="subcategories[]" placeholder="Enter subcategory" 
+                                                                           class="form-control mr-2" style="flex: 1;">
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             
                                             <div class="form-group">
-                                                <div class="button-group">
+                                                <div class="d-flex justify-content-start" style="gap: 10px;">
                                                     <button type="submit" class="tf-button style-1">Update Category</button>
                                                     <a href="category-list.php" class="tf-button style-1 btn-secondary">Cancel</a>
                                                 </div>
@@ -171,9 +206,8 @@ $category = mysqli_fetch_assoc($result);
                         
                         <!-- bottom-page -->
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 Remos. Design with</div>
-                            <i class="icon-heart"></i>
-                            <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
+                            <div class="body-text">Copyright © 2025 Iskcon Ravet. Design</div>
+                            <div class="body-text">by <a href="https://designzfactory.in/">designzfactory</a> All rights reserved.</div>
                         </div>
                         <!-- /bottom-page -->
                     </div>
@@ -195,5 +229,14 @@ $category = mysqli_fetch_assoc($result);
     <script src="js/switcher.js"></script>
     <script src="js/theme-settings.js"></script>
     <script src="js/main.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        // Remove subcategory input field
+        $(document).on("click", ".remove-subcategory", function() {
+            $(this).closest(".subcategory-input-group").remove();
+        });
+    });
+    </script>
 </body>
 </html>

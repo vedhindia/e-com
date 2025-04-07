@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Redirect with success message
         echo "<script>
                 alert('Category added successfully!');
-                window.location.href='category-list.php';
+                window.location.href='subcategories.php';
               </script>";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;

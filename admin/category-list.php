@@ -9,9 +9,18 @@ if (empty($_SESSION['admin_session'])) {
 $search = '';
 if (isset($_GET['search']) && !empty($_GET['search'])) {
     $search = mysqli_real_escape_string($conn, $_GET['search']);
-    $query = "SELECT * FROM categories WHERE main_category LIKE '%$search%' OR subcategory LIKE '%$search%' ORDER BY id DESC";
+    // Modified query to fetch categories and subcategories separately
+    $query = "SELECT c.id AS category_id, c.main_category, s.id AS subcategory_id, s.subcategory_name 
+              FROM categories c 
+              LEFT JOIN subcategories s ON c.id = s.category_id 
+              WHERE c.main_category LIKE '%$search%' OR s.subcategory_name LIKE '%$search%' 
+              ORDER BY c.main_category, s.subcategory_name";
 } else {
-    $query = "SELECT * FROM categories ORDER BY id DESC";
+    // Modified query to fetch categories and subcategories separately
+    $query = "SELECT c.id AS category_id, c.main_category, s.id AS subcategory_id, s.subcategory_name 
+              FROM categories c 
+              LEFT JOIN subcategories s ON c.id = s.category_id 
+              ORDER BY c.main_category, s.subcategory_name";
 }
 
 $result = mysqli_query($conn, $query);
@@ -24,9 +33,14 @@ $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $current_page = max(1, min($current_page, $total_pages));
 $offset = ($current_page - 1) * $entries_per_page;
 
-// Modify query to include pagination
-$query .= " LIMIT $offset, $entries_per_page";
-$result = mysqli_query($conn, $query);
+// Store all results for pagination
+$all_rows = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $all_rows[] = $row;
+}
+
+// Get paginated portion of results
+$paginated_rows = array_slice($all_rows, $offset, $entries_per_page);
 ?>
 <!DOCTYPE html>
 
@@ -178,26 +192,27 @@ $result = mysqli_query($conn, $query);
                                         <ul class="flex flex-column">
                                             <?php
                                             $sr_no = $offset + 1;
-                                            while ($row = mysqli_fetch_assoc($result)) { ?>
-                                                <li class="product-item gap14">
-                                                    <div class="flex items-center flex-grow">
-                                                        <div class="sr-number">
-                                                            <span class="body-title-2"><?php echo $sr_no++; ?></span>
+                                            if (count($paginated_rows) > 0) {
+                                                foreach ($paginated_rows as $row) { ?>
+                                                    <li class="product-item gap14">
+                                                        <div class="flex items-center flex-grow">
+                                                            <div class="sr-number">
+                                                                <span class="body-title-2"><?php echo $sr_no++; ?></span>
+                                                            </div>
+                                                            <div class="name">
+                                                                <a href="#" class="body-title-2"><?php echo htmlspecialchars($row['main_category']); ?></a>
+                                                            </div>
+                                                            <div class="name">
+                                                                <a href="#" class="body-title-2"><?php echo $row['subcategory_name'] ? htmlspecialchars($row['subcategory_name']) : 'No subcategory'; ?></a>
+                                                            </div>
+                                                            <div class="list-icon-function">
+                                                                <div class="item edit"><a href="edit-category.php?id=<?php echo $row['category_id']; ?>"><i class="icon-edit-3"></i></a></div>
+                                                                <div class="item trash"><a href="delete-category.php?id=<?php echo $row['category_id']; ?>" onclick="return confirm('Are you sure?');"><i class="icon-trash-2"></i></a></div>
+                                                            </div>
                                                         </div>
-                                                        <div class="name">
-                                                            <a href="#" class="body-title-2"><?php echo htmlspecialchars($row['main_category']); ?></a>
-                                                        </div>
-                                                        <div class="name">
-                                                            <a href="#" class="body-title-2"><?php echo htmlspecialchars($row['subcategory']); ?></a>
-                                                        </div>
-                                                        <div class="list-icon-function">
-                                                            <div class="item edit"><a href="edit-category.php?id=<?php echo $row['id']; ?>"><i class="icon-edit-3"></i></a></div>
-                                                            <div class="item trash"><a href="delete-category.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure?');"><i class="icon-trash-2"></i></a></div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            <?php } ?>
-                                            <?php if (mysqli_num_rows($result) == 0): ?>
+                                                    </li>
+                                                <?php }
+                                            } else { ?>
                                                 <li class="product-item gap14">
                                                     <div class="flex items-center justify-center gap20 flex-grow">
                                                         <div class="name">
@@ -205,7 +220,7 @@ $result = mysqli_query($conn, $query);
                                                         </div>
                                                     </div>
                                                 </li>
-                                            <?php endif; ?>
+                                            <?php } ?>
                                         </ul>
                                     </div>
                                     <div class="divider"></div>
