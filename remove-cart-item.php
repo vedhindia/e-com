@@ -7,14 +7,14 @@ $response = array('success' => false, 'message' => '');
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cart_id'])) {
     try {
         $cart_id = (int)$_POST['cart_id'];
-        $session_id = $_SESSION['session_id'];
+        $user_id = $_SESSION['user_id'];
 
         // Remove item from cart
-        $sql = "DELETE FROM cart WHERE id = ? AND session_id = ?";
+        $sql = "DELETE FROM cart WHERE id = ? AND user_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
         
         if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "is", $cart_id, $session_id);
+            mysqli_stmt_bind_param($stmt, "is", $cart_id, $user_id);
             
             if (mysqli_stmt_execute($stmt)) {
                 if (mysqli_stmt_affected_rows($stmt) > 0) {

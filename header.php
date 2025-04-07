@@ -180,14 +180,14 @@ include_once 'admin/dbconnection.php';
 
 // Function to get cart count
 function getInitialCartCount($conn) {
-    if (!isset($_SESSION['session_id'])) {
+    if (!isset($_SESSION['user_id'])) {
         return 0;
     }
-    $session_id = $_SESSION['session_id'];
-    $sql = "SELECT COUNT(DISTINCT product_id) as count FROM cart WHERE session_id = ?";
+    $user_id = $_SESSION['user_id'];
+    $sql = "SELECT COUNT(DISTINCT product_id) as count FROM cart WHERE user_id = ?";
     $stmt = mysqli_prepare($conn, $sql);
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "s", $session_id);
+        mysqli_stmt_bind_param($stmt, "s", $user_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
@@ -198,14 +198,14 @@ function getInitialCartCount($conn) {
 
 // Function to get wishlist count
 function getWishlistCount($conn) {
-    if (!isset($_SESSION['session_id'])) {
+    if (!isset($_SESSION['user_id'])) {
         return 0;
     }
-    $session_id = $_SESSION['session_id'];
-    $sql = "SELECT COUNT(*) as count FROM wishlist WHERE session_id = ?";
+    $user_id = $_SESSION['user_id'];
+    $sql = "SELECT COUNT(*) as count FROM wishlist WHERE user_id = ?";
     $stmt = mysqli_prepare($conn, $sql);
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "s", $session_id);
+        mysqli_stmt_bind_param($stmt, "s", $user_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
@@ -272,7 +272,7 @@ $initial_wishlist_count = getWishlistCount($conn);
                 <div class="col-lg-6 col-md-6 col-sm-6 col-8">
                     <div class="topbar_menu">
                         <ul>
-                            <li><a href="order.html"><i class="ti-bag"></i>My Account</a></li>
+                            <li><a href="order.php"><i class="ti-bag"></i>My Account</a></li>
                             <li><a href="order-tracking.html"><i class="ti-location-pin"></i>Track Order</a></li>
                             <li class="hide-m">
                                 <a href="wishlist.php" class="wishlist-icon <?php echo $initial_wishlist_count > 0 ? 'active' : ''; ?>">
@@ -355,7 +355,7 @@ $initial_wishlist_count = getWishlistCount($conn);
                         <ul>
                             <li><a data-toggle="collapse" href="#mySearch" role="button" aria-expanded="false"
                                     aria-controls="mySearch"><i class="ti-search"></i></a></li>
-                            <li><a href="login-signup.html"><i class="ti-user"></i></a></li>
+                            <li><a href="login-signup.php"><i class="ti-user"></i></a></li>
                             <li><a href="my-cart.php"><i class="ti-shopping-cart"></i><span class="cart_counter"><?php echo $initial_cart_count; ?></span></a></li>
                         </ul>
                     </div>

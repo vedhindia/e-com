@@ -1,9 +1,13 @@
 <?php
 session_start();
-include_once 'admin/dbconnection.php';
+include 'admin/dbconnection.php';
+include 'check-auth.php';
+
+// Require login for this page
+requireLogin();
 
 // Function to get cart items with details
-function getCartItems($conn, $session_id) {
+function getCartItems($conn, $user_id) {
     $items = array();
     $total = 0;
     
@@ -20,11 +24,11 @@ function getCartItems($conn, $session_id) {
                 FROM product_images
                 GROUP BY product_id
             ) pi ON p.id = pi.product_id
-            WHERE c.session_id = ?";
+            WHERE c.user_id = ?";
             
     $stmt = mysqli_prepare($conn, $sql);
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "s", $session_id);
+        mysqli_stmt_bind_param($stmt, "i", $user_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         
@@ -39,7 +43,7 @@ function getCartItems($conn, $session_id) {
 }
 
 // Get cart items
-$cart_data = isset($_SESSION['session_id']) ? getCartItems($conn, $_SESSION['session_id']) : array('items' => array(), 'total' => 0);
+$cart_data = isset($_SESSION['user_id']) ? getCartItems($conn, $_SESSION['user_id']) : array('items' => array(), 'total' => 0);
 ?>
 <!DOCTYPE html>
 <html lang="en">

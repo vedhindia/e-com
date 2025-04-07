@@ -1,54 +1,58 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
+include 'admin/dbconnection.php';
+include 'check-auth.php';
 
-include_once 'admin/dbconnection.php';
+// Require login for this action
+requireLogin();
 
-$response = array('success' => false, 'message' => '');
+// Initialize response array
+$response = array(
+    'success' => false,
+    'message' => ''
+);
 
-if (!isset($_SESSION['session_id'])) {
-    $response['message'] = 'Session not found';
-    echo json_encode($response);
-    exit;
-}
-
+// Check if wishlist_id is provided
 if (!isset($_POST['wishlist_id'])) {
-    $response['message'] = 'Wishlist ID not provided';
+    $response['message'] = 'Wishlist ID is required';
     echo json_encode($response);
-    exit;
+    exit();
 }
 
-$wishlist_id = (int)$_POST['wishlist_id'];
-$session_id = $_SESSION['session_id'];
+$wishlist_id = mysqli_real_escape_string($conn, $_POST['wishlist_id']);
+$user_id = $_SESSION['user_id'];
 
 try {
     // Verify the wishlist item belongs to the current session
-    $verify_sql = "SELECT id FROM wishlist WHERE id = ? AND session_id = ?";
-    $verify_stmt = mysqli_prepare($conn, $verify_sql);
-    mysqli_stmt_bind_param($verify_stmt, "is", $wishlist_id, $session_id);
-    mysqli_stmt_execute($verify_stmt);
-    $verify_result = mysqli_stmt_get_result($verify_stmt);
-    
-    if (mysqli_num_rows($verify_result) === 0) {
-        throw new Exception('Invalid wishlist item');
+    $check_query = "SELECT id FROM wishlist WHERE id = ? AND user_id = ?";
+    $stmt = mysqli_prepare($conn, $check_query);
+    mysqli_stmt_bind_param($stmt, "is", $wishlist_id, $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (mysqli_num_rows($result) == 0) {
+        $response['message'] = 'Invalid wishlist item';
+        echo json_encode($response);
+        exit();
     }
-    
+
     // Delete the wishlist item
-    $delete_sql = "DELETE FROM wishlist WHERE id = ? AND session_id = ?";
-    $delete_stmt = mysqli_prepare($conn, $delete_sql);
-    mysqli_stmt_bind_param($delete_stmt, "is", $wishlist_id, $session_id);
+    $delete_query = "DELETE FROM wishlist WHERE id = ? AND user_id = ?";
+    $stmt = mysqli_prepare($conn, $delete_query);
+    mysqli_stmt_bind_param($stmt, "is", $wishlist_id, $user_id);
     
-    if (mysqli_stmt_execute($delete_stmt)) {
+    if (mysqli_stmt_execute($stmt)) {
         $response['success'] = true;
-        $response['message'] = 'Item removed from wishlist';
+        $response['message'] = 'Item removed from wishlist successfully';
     } else {
-        throw new Exception('Error removing item from wishlist');
+        $response['message'] = 'Failed to remove item from wishlist: ' . mysqli_error($conn);
     }
-    
+
 } catch (Exception $e) {
-    $response['message'] = $e->getMessage();
+    $response['message'] = 'An error occurred: ' . $e->getMessage();
 }
 
+// Return JSON response
 header('Content-Type: application/json');
-echo json_encode($response); 
+echo json_encode($response);
+?> 

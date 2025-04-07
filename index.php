@@ -1,3 +1,12 @@
+<?php
+session_start();
+include 'admin/dbconnection.php';
+include 'check-auth.php';
+
+// Require login for this page
+requireLogin();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -912,6 +921,26 @@
         </section>
         <div class="clearfix"></div>
         <!-- ======================== Fresh & Fast Fruits End ==================== -->
+
+	<!-- ======================== Tag & Explore End ==================== -->
+    <section class="image-bg" style="background:url(assets/img/middle-banner.jpg) no-repeat;">
+				<div class="ht-60"></div>
+				<div class="container">
+					<div class="row justify-content-center">
+						<div class="col-lg-8 col-md-10 col-sm-12">
+							<div class="tags_explore text-center">
+								<h2 class="mb-0">Best Deal of The Month</h2>
+								<p>Explore Your Offers with Odex<p>
+								<a href="search-sidebar.html" class="btn btn-light">Explore Your Order</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="ht-60"></div>
+			</section>
+			<!-- ======================== Tag & Explore End ==================== -->
+
+
 
         <!-- ======================== Offer Banner Start ==================== -->
         <section class="offer-banner-wrap gray">

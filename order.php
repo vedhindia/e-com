@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 	
-<!-- Mirrored from themezhub.net/odex-live/odex/order.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 01 Apr 2025 05:34:09 GMT -->
 <head>
 		<meta charset="utf-8" />
 		<meta name="author" content="www.frebsite.nl" />
