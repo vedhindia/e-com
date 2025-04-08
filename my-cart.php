@@ -36,6 +36,8 @@ function getCartItems($conn, $user_id) {
             $row['subtotal'] = $row['unit_price'] * $row['quantity'];
             $total += $row['subtotal'];
             $items[] = $row;
+
+			$product_id = $row['product_id'];
         }
     }
     
@@ -226,7 +228,18 @@ $cart_data = isset($_SESSION['user_id']) ? getCartItems($conn, $_SESSION['user_i
 									</ul>
 								</div>
 							</div>
-							<a class="btn btn-block btn-dark mb-2" href="checkout.php">Proceed to Checkout</a>
+							<div class="cart_action">
+								<ul>
+									<li><a href="#" class="btn btn-go-cart btn-theme">View/Edit Cart</a></li>
+									<li>
+										<form action="process-checkout.php" method="POST">
+										
+
+											<button type="submit" class="btn btn-checkout">Checkout Now</button>
+										</form>
+									</li>
+								</ul>
+							</div>
 							<a class="px-0 text-body" href="index.php"><i class="ti-back-left mr-2"></i> Continue Shopping</a>
 						</div>
 						
